@@ -93,7 +93,7 @@ end
 module Win32 = struct
   let current_dir_name = "."
   let parent_dir_name = ".."
-  let dir_sep = "\\"
+  let dir_sep = "/"
   let is_dir_sep s i = let c = s.[i] in c = '/' || c = '\\' || c = ':'
   let is_relative n =
     (String.length n < 1 || n.[0] <> '/')
@@ -111,7 +111,7 @@ module Win32 = struct
                             (String.length suff) in
     String.lowercase_ascii s = String.lowercase_ascii suff)
   let temp_dir_name =
-    try Sys.getenv "TEMP" with Not_found -> "."
+    try Sys.getenv "TEMP" |> String.map (function | '\\' -> '/' | ch -> ch) with Not_found -> "."
   let quote s =
     let l = String.length s in
     let b = Buffer.create (l + 20) in
