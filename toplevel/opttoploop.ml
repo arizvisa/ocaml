@@ -523,7 +523,12 @@ let load_ocamlinit ppf =
   | None ->
      if Sys.file_exists ".ocamlinit" then ignore (use_silently ppf ".ocamlinit")
      else try
-       let home_init = Filename.concat (Sys.getenv "HOME") ".ocamlinit" in
+       let home_path =
+         match Sys.os_type with
+         | "Win32" -> Sys.getenv "USERPROFILE" |> String.map (function | '\\' -> '/' | ch -> ch)
+         | _ ->  Sys.getenv "HOME"
+       in
+       let home_init = Filename.concat home_path ".ocamlinit" in
        if Sys.file_exists home_init then ignore (use_silently ppf home_init)
      with Not_found -> ()
 ;;

@@ -866,7 +866,7 @@ let popen_processes = (Hashtbl.create 7 : (popen_process, int) Hashtbl.t)
 
 let open_proc cmd optenv proc input output error =
   let shell =
-    try Sys.getenv "COMSPEC"
+    try Sys.getenv "COMSPEC" |> String.map (function | '\\' -> '/' | ch -> ch)
     with Not_found -> raise(Unix_error(ENOEXEC, "open_proc", cmd)) in
   let pid =
     win_create_process shell (shell ^ " /c " ^ cmd) optenv
